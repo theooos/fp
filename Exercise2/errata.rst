@@ -8,12 +8,12 @@ Errata to exercise set 2
 On printing and GHCi
 ====================
 
-Q: '\n' doesn't work for me. What's the deal?
+Q: ``'\n'`` doesn't work for me. What's the deal?
 
 A: This is a result of the way GHCi handles strings. "Escape" characters
-such as \n need to be interpreted to display as expected. GHCi doesn't
+such as ``\n`` need to be interpreted to display as expected. GHCi doesn't
 do this by default. To properly check your output, you need to wrap
-your String in a relevant IO function; in this case putStrLn. e.g. ::
+your String in a relevant IO function; in this case ``putStrLn``. e.g. ::
 
         *Solution> lsTree (fibCreate 3)
         "dir3\n|\n|-- dir2\n|   |\n|   |-- dir1\n|   |   |\n|   |   |-- file\n|   |\n|   |-- file\n|\n|-- dir1\n|   |\n|   |-- file"
@@ -43,7 +43,7 @@ On "ambiguous occurence" and conflicting definitions
 Q: Data.List conflicts with the function `find` we are supposed to define.
 Can we use Exercise.find to call our function?
 
-A: Calling `find` must refer to the function we've asked you to define;
+A: Calling ``find`` must refer to the function we've asked you to define;
 our tests will fail otherwise. To get around conflicting definitions, you
 can either use a qualified import, or hide all conflicting definitions.
 For a qualified import, use something like::
@@ -130,7 +130,7 @@ Here, the first line is a subdirectory, the second is a file.
 lsTree
 ======
 
-Q: should we print a trailing `|` after empty directories?
+Q: should we print a trailing ``|`` after empty directories?
 
 E.g., should we print (1)::
 
@@ -178,7 +178,7 @@ worrying if something already exists there?
 A: Insert the entry as if there were no name conflict. (Thus, you will have
 two entries with the same path). However:
 
-1. You may assume that the `root` directory tree you are given contains
+1. You may assume that the ``root`` directory tree you are given contains
    no name conflicts prior to your cp, so multiple calls to cp may not
    behave properly.
 2. If you are given an invalid path (e.g., your path refers to a file,
