@@ -4,6 +4,11 @@ Functional Programming: test benches
 Version history
 ---------------
 
+20 Oct 19:55
+	Fixed ``testEntries`` and the test for ``lsTree``. 
+
+	.. Our revisions: 00e46093c25824c78e7a97e2274337e82f10b0e5 and fe853c7753fa12c7cca55df7173214eac9deecfb
+
 20 Oct 16:50
     Added info on contact; removed sentence on the test for ``cp`` as it worked already.
 20 Oct 14:00
