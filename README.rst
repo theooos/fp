@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+20 Oct 21:10
+	Added the :doc:`errata <Exercise2/errata>`; please check them out!
 20 Oct 20:40
 	You are now guaranteed to get only directories as input to ``find``. 
 20 Oct 19:55

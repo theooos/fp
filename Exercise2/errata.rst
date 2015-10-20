@@ -1,5 +1,12 @@
-****
-On printing and GHCi:
+
+************************
+Errata to exercise set 2
+************************
+
+
+
+On printing and GHCi
+====================
 
 Q: '\n' doesn't work for me. What's the deal?
 
@@ -29,8 +36,9 @@ A: This is a result of the way GHCi handles strings. "Escape" characters
    Note, however, that you cannot use IO functions in your file, or
    our tests will fail to compile.
 
-****
+
 On "ambiguous occurence" and conflicting definitions
+====================================================
 
 Q: Data.List conflicts with the function `find` we are supposed to define.
    Can we use Exercise.find to call our function?
@@ -64,13 +72,15 @@ A: Calling `find` must refer to the function we've asked you to define;
 
    will only import typeclass instances from Control.Monad.
 
-****
-exampleEntry3:
+
+exampleEntry3
+=============
 
 The content should be ""
 
-****
-cd/cd1: 
+
+cd/cd1
+======
 
 * If given a file as "root", both cd ancd cd1 should return Nothing.
 * If given an empty string "" (or []) for the path, you should return
@@ -79,8 +89,9 @@ cd/cd1:
 * assume that the same path does not refer to multiple entries. I.e.,
   assume that a directory only has one entry with a given name.
 
-****
+
 implode and explode
+===================
 
 Q: As the doc states, 
 
@@ -100,8 +111,9 @@ A: It is possible, and necessary. ;)
    Don't forget to look at functions in Prelude and Data.List, as they
    may be helpful.
 
-****
-lsL 
+
+lsL
+===
 
 Q: What should be output in the case of a directory?
 
@@ -114,8 +126,9 @@ A: Simply output the directory name. E.g.,
 
 Here, the first line is a subdirectory, the second is a file.
 
-****
+
 lsTree
+======
 
 Q: should we print a trailing `|` after empty directories?
 
@@ -153,8 +166,9 @@ or (2):
 
 A: You should not print trailing '|', so (1) is correct.
 
-****
+
 cp
+==
 
 
 Q: If we attempt to cp an entry into a path which already exists, should
@@ -170,8 +184,9 @@ A: Insert the entry as if there were no name conflict. (Thus, you will have
     (2) If you are given an invalid path (e.g., your path refers to a file,
         or to nowhere in the tree), you should return the original Entry
 
-****
+
 rm
+==
 
 Q: If given an empty path should we return an error, or delete everything
    within that directory? If a file is found with the same name, but
@@ -193,8 +208,9 @@ A: Remove the entry (directory or file) refered to by the path--the
    directory, its sub-directories should be deleted with it (this
    should happen automatically if you delete correctly).
 
-****
+
 sortTree
+========
 
 Q: Are we meant to be writing our own instance of Ord?
 
@@ -209,8 +225,9 @@ A: No, sorry; the test bench expects the directory to be sorted by name.
    However, you may assume that there is only one entry with a given name
    in the directory.
 
-****
+
 modifyEntries
+=============
 
 Q: What are we supposed to do for modifyEntries?
    [insert remark about cryptic description]
@@ -222,8 +239,9 @@ A: Sorry... the description refers to an exercise which has been removed,
   in a file tree according to some update function. The update function
   can update both the name and properties of each file.
 
-****
+
 fibCreate
+=========
 
 Q: Shouldn't dir2 in the directories above fibCreate contain another
    file?
@@ -246,6 +264,4 @@ A: Yes. the example should be:
         |   |-- file, size 0, time 0, content 0
 
    NB: You can use this to give a slick 1-line definition of fibEntry.
-
-****
 
