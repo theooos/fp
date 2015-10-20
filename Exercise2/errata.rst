@@ -178,12 +178,11 @@ worrying if something already exists there?
 A: Insert the entry as if there were no name conflict. (Thus, you will have
 two entries with the same path). However:
 
-    (1) You may assume that the `root` directory tree you are given contains
-        no name conflicts prior to your cp, so multiple calls to cp may not
-        behave properly.
-    (2) If you are given an invalid path (e.g., your path refers to a file,
-        or to nowhere in the tree), you should return the original Entry
-
+1. You may assume that the `root` directory tree you are given contains
+   no name conflicts prior to your cp, so multiple calls to cp may not
+   behave properly.
+2. If you are given an invalid path (e.g., your path refers to a file,
+   or to nowhere in the tree), you should return the original Entry
 
 rm
 ==
