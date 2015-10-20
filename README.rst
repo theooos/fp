@@ -5,7 +5,7 @@ Version history
 ---------------
 
 20 Oct 21:10
-	Added the `errata <Exercise2/errata.rst>`_; please check them out!
+	Added the `errata <Exercise2/errata.rst>`_ by Cory; please check them out!
 20 Oct 20:40
 	You are now guaranteed to get only directories as input to ``find``. 
 20 Oct 19:55
