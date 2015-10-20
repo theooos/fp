@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+20 Oct 16:50
+    Added info on contact; removed sentence on the test for ``cp`` as it worked already.
 20 Oct 14:00
     Created repository with test bench for lab2.
 
@@ -26,8 +28,13 @@ to test your submission. This will
 
 Then the test bench will give you an estimate of your mark for this submission.
 
-From time to time, we may release new test benches. Specifically, we do not yet test all edge cases of ``cp`` as documented in the errata. **However, you should still follow the errata.** We will update the tests for ``cp`` soon so the test bench will give you a better indication of your mark. We will notify you when this newer test bench is ready.
+From time to time, we may release new test benches to fix problems. You can update to a newer test bench simply by running ``git pull`` inside ``fp-testbenches``. We will notify you when newer test benches are available.
 
 ----
 
 You can also use Git from your laptop or home machine if you install it. As usual, you must ``module load ghc/7.6.3`` whenever you use ``ghc``. 
+
+In case of problems
+-------------------
+
+Although we prepare the test bench with care, it is always possible that there is a bug. As usual, if you suspect there might be a problem, please report it on Facebook.
