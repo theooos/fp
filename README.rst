@@ -4,8 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
-20 Oct 12:37
-    Created test repository
+20 Oct 14:00
+    Created repository with test bench for lab2.
 
 
 How to get the test benches
