@@ -56,15 +56,15 @@ Then to use functions from Data.List, you preface it with List::
 
 To hide conflicting definitions use (e.g.)::
 
-        import DAta.List hiding (find)
+        import Data.List hiding (find)
 
 To hide multiple functions, separate them with a comma::
 
-        import DAta.List hiding (find,permutations)
+        import Data.List hiding (find,permutations)
 
 Another alternative is to only import the functions you need::
 
-        import DAta.List (permutations, scanl)
+        import Data.List (permutations, scanl)
 
 Finally, not directly relevant for this exercise, but if you only want to import typeclass instances from a module, you can give an empty list of functions to import::
 
@@ -84,10 +84,9 @@ cd/cd1
 
 * If given a file as "root", both cd ancd cd1 should return Nothing.
 * If given an empty string "" (or []) for the path, you should return
-  the root. You may
-
-* assume that the same path does not refer to multiple entries. I.e.,
-  assume that a directory only has one entry with a given name.
+  the root.
+* You may assume that the same path does not refer to multiple
+  entries. I.e., assume that a directory only has one entry with a given name.
 
 
 implode and explode
