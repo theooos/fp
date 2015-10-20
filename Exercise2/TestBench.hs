@@ -104,7 +104,7 @@ testfp_1_1_in = [FP 3 "abc" 4]
 testfp_1_1_out = [True]
 
 -- Inputs and correct outputs for testEntries
-testentries_1_2_in = [[File "todo.txt" (FP 723 "do fp exercises" 2015),Dir "empty-directory" [],Dir "hard drive" [Dir "WINDOWS" [File "cmd.exe" (FP 1024 "" 1995),File "explorer.exe" (FP 2048 "" 1995)],Dir "Documents" [Dir "User1" [File "recipe.doc" (FP 723 "recipe.doc" 2000)],Dir "User2" []]]]]
+testentries_1_2_in = [[File "todo.txt" (FP 723 "do fp exercises" 2015),Dir "empty-directory" [],Dir "hard drive" [Dir "WINDOWS" [File "cmd.exe" (FP 1024 "" 1995),File "explorer.exe" (FP 2048 "" 1995)],Dir "Documents" [Dir "User1" [File "recipe.doc" (FP 723 "" 2000)],Dir "User2" []]]]]
 testentries_1_2_out = [True]
 
 -- Inputs and correct outputs for test_cd_fun
