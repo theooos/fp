@@ -4,6 +4,10 @@ Functional Programming: test benches
 Version history
 ---------------
 
+21 Oct 11:40
+	Combined the fixes.
+20 Oct 22:45
+	Fixed newlines for ``lsL``; undid fix for ``find`` (``500 internal demonstrator error``, sorry)
 20 Oct 21:10
 	Added the `errata <Exercise2/errata.rst>`_ by Cory; please check them out!
 20 Oct 20:40
