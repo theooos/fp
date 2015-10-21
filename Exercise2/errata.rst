@@ -125,6 +125,12 @@ A: Simply output the directory name. E.g., ::
 
 Here, the first line is a subdirectory, the second is a file.
 
+Q: Can you clarify:
+    You need to separate every line with a newline ('\n') character,         
+    and also put a newline at the end.
+
+A: There should be a newline character at the end of the line for every printed
+   entry. Moreover, a newline should always be printed.
 
 lsTree
 ======

@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+21 Oct 12:15
+    ``lsL`` was not properly fixed; fixed this and added clarification in errata.
 21 Oct 11:40
 	Combined the fixes.
 20 Oct 22:45
