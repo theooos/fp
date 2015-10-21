@@ -103,6 +103,15 @@ fNorm = entryNormalise youNeedToBeAbleToReadMyMindToBeAbleToUnderstandThisSimple
 
         fg a b = getName a > getName b
 
+sNorm :: String -> String
+sNorm =
+        -- Notice that there will be always a trailing \n at the end of the
+        -- string (for every nonemtpy string) because unlines adds it.
+        unlines . fixLastLines . map removeTrailing . lines
+    where
+        removeTrailing = reverse . dropWhile (== ' ') . reverse
+        fixLastLines   = reverse . dropWhile (== "") . reverse
+
 modifyEntries_withRandomFunction :: (Seed, Entry) -> Entry
 modifyEntries_withRandomFunction (seed, entry)
   = modifyEntries entry (modifierForSeed seed)

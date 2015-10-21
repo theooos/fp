@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+21 Oct 12:52
+    We are less pedantic when testing ``lsL`` and ``lsTree`` (trailing spaces should not matter anymore).
 21 Oct 12:15
     ``lsL`` was not properly fixed; fixed this and added clarification in errata.
 21 Oct 11:40
