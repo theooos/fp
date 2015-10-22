@@ -4,29 +4,19 @@ Functional Programming: test benches
 Version history
 ---------------
 
-21 Oct 15:34
-    We make sure that we test ``lsL`` and ``lsTree`` with a directory.
-21 Oct 12:52
-    We are less pedantic when testing ``lsL`` and ``lsTree`` (trailing spaces should not matter anymore).
-21 Oct 12:15
-    ``lsL`` was not properly fixed; fixed this and added clarification in errata.
-21 Oct 11:40
-	Combined the fixes.
-20 Oct 22:45
-	Fixed newlines for ``lsL``; undid fix for ``find`` (``500 internal demonstrator error``, sorry)
-20 Oct 21:10
-	Added the `errata <Exercise2/errata.rst>`_ by Cory; please check them out!
-20 Oct 20:40
-	You are now guaranteed to get only directories as input to ``find``. 
-20 Oct 19:55
-	Fixed ``testEntries`` and the test for ``lsTree``. 
+- 21 Oct 15:34: We make sure that we test ``lsL`` and ``lsTree`` with a directory.
+- 21 Oct 12:52: We are less pedantic when testing ``lsL`` and ``lsTree`` (trailing spaces should not matter anymore).
+- 21 Oct 12:15: ``lsL`` was not properly fixed; fixed this and added clarification in errata.
+- 21 Oct 11:40: Combined the fixes.
+- 20 Oct 22:45: Fixed newlines for ``lsL``; undid fix for ``find`` (``500 internal demonstrator error``, sorry)
+- 20 Oct 21:10: Added the `errata <Exercise2/errata.rst>`_ by Cory; please check them out!
+- 20 Oct 20:40: You are now guaranteed to get only directories as input to ``find``.
+- 20 Oct 19:55: Fixed ``testEntries`` and the test for ``lsTree``.
 
 	.. Our revisions: 00e46093c25824c78e7a97e2274337e82f10b0e5 and fe853c7753fa12c7cca55df7173214eac9deecfb
 
-20 Oct 16:50
-    Added info on contact; removed sentence on the test for ``cp`` as it worked already.
-20 Oct 14:00
-    Created repository with test bench for lab2.
+- 20 Oct 16:50: Added info on contact; removed sentence on the test for ``cp`` as it worked already.
+- 20 Oct 14:00: Created repository with test bench for lab2.
 
 
 How to get the test benches
