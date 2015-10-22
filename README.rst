@@ -57,3 +57,23 @@ In case of problems
 -------------------
 
 Although we prepare the test bench with care, it is always possible that there is a bug. As usual, if you suspect there might be a problem, please report it on Facebook.
+
+In case of difficulty
+---------------------
+
+We will do our best to help you in the labs. Outside the labs, Facebook_ is often a very good resource. Please note that Bertie gives a tutorial every Monday 10:30 - 12:00.
+
+Rooms: 
+
+==============   ================
+Week 4, 8-11     MechEng G28
+Week 5           Strathcona LT4
+Weeks 6-7        MechEng G36
+==============   ================
+
+
+.. This is a comment.
+..
+.. Link targets follow. 
+
+.. _Facebook: https://www.facebook.com/groups/511767035624467/
