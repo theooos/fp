@@ -56,6 +56,10 @@ test_rm_fun = fNorm . (uncurry rm)
 test_cd_fun :: (Entry, Path) -> Maybe Entry
 test_cd_fun input = fNorm `fmap` (uncurry cd) input
 
+simpleModifierForSeed :: Seed -> (EntryName, FileProp) -> (EntryName, FileProp)
+simpleModifierForSeed (Seed seed) (en, FP size content time) =
+    (en ++ show seed, FP (size + seed) (content ++ show seed) (time + seed))
+
 modifierForSeed :: Seed -> (EntryName, FileProp) -> (EntryName, FileProp)
 modifierForSeed (Seed seed) input@(en, (FP size content time)) =
     (en', FP size' content' time')
@@ -111,6 +115,19 @@ sNorm =
     where
         removeTrailing = reverse . dropWhile (== ' ') . reverse
         fixLastLines   = reverse . dropWhile (== "") . reverse
+
+maximumWidth :: String -> Int
+maximumWidth text = maximum (map length (lines text))
+
+assert_ls_not_too_wide :: (Int, Entry) -> ()
+assert_ls_not_too_wide (width, entry) =
+  if width >= maximumWidth (ls width entry)
+  then ()
+  else error "ls output is too wide"
+
+modifyEntries_withSimpleRandomFunction :: (Seed, Entry) -> Entry
+modifyEntries_withSimpleRandomFunction (seed, entry)
+  = modifyEntries entry (simpleModifierForSeed seed)
 
 modifyEntries_withRandomFunction :: (Seed, Entry) -> Entry
 modifyEntries_withRandomFunction (seed, entry)

@@ -4,6 +4,7 @@ Functional Programming: test benches
 Version history
 ---------------
 
+- 23 Oct 14:45: Tests for ``explode`` are now more liberal about extra slashes. Tests for ``ls``, ``find`` and ``modifyEntries`` should work.
 - 21 Oct 15:34: We make sure that we test ``lsL`` and ``lsTree`` with a directory.
 - 21 Oct 12:52: We are less pedantic when testing ``lsL`` and ``lsTree`` (trailing spaces should not matter anymore).
 - 21 Oct 12:15: ``lsL`` was not properly fixed; fixed this and added clarification in errata.
