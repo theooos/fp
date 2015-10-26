@@ -71,6 +71,10 @@ modifierForSeed (Seed seed) input@(en, (FP size content time)) =
         content' = content ++ show (h 3)
         time' = abs (time `xor` (h 4))
 
+simpleSelectorForSeed :: Seed -> (EntryName, FileProp) -> Bool
+simpleSelectorForSeed (Seed seed) (name, FP size content time) =
+    length name < seed*10 && size + length content + time < seed*30
+
 selectorForSeed :: Seed -> (EntryName, FileProp) -> Bool
 selectorForSeed (Seed seed) input =
     hash (input, seed) .&. 1 == 1
@@ -132,6 +136,10 @@ modifyEntries_withSimpleRandomFunction (seed, entry)
 modifyEntries_withRandomFunction :: (Seed, Entry) -> Entry
 modifyEntries_withRandomFunction (seed, entry)
   = modifyEntries entry (modifierForSeed seed)
+
+find_withSimpleRandomFunction :: (Seed, Entry) -> Entry
+find_withSimpleRandomFunction (seed, entry)
+  = find entry (simpleSelectorForSeed seed)
 
 find_withRandomFunction :: (Seed, Entry) -> Entry
 find_withRandomFunction (seed, entry)
