@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+- 2 Dec 13:20: Fixed bug in test #1; we accidentally checked the order of positions in the list
+
 - 2 Dec 11:00: Created repository with test bench for lab4. The test bench is not finished we're still working on Test 6 and Test 8. Also the marking is not decided yet.
 
 
