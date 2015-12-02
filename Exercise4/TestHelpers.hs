@@ -54,22 +54,25 @@ toBoard2 (sX, sY, pos, pl) = B2 (sX, sY) pos pl
 fromBoard2 :: Board2 -> (Int, Int, [Position], Player)
 fromBoard2 (B2 (sX, sY) pos pl) = (sX, sY, pos, pl)
 
-toMove2 :: Board2 -> (Int, Int, Player) -> Move2
-toMove2 _ (x,y,pl) = M2 pl (x,y)
+toMove2 :: (Int, Int, Player) -> Move2
+toMove2 (x,y,pl) = M2 pl (x,y)
 
 fromMove2 :: Move2 -> (Int, Int, Player)
 fromMove2 (M2 pl (x,y)) = (x,y,pl)
 
 
-mTm2 :: Board2 -> Move -> Move2
-mTm2 b = toMove2 b . fromMove
+sortMoveList :: (Int, Int, [(Int, Int)], Player) -> (Int, Int, [(Int, Int)], Player)
+sortMoveList (a, b, l, d) = (a, b, sort l, d)
+
+mTm2 :: Move -> Move2
+mTm2 = toMove2 . fromMove
 
 m2Tm :: Board -> Move2 -> Move
 m2Tm b = toMove b . fromMove2
 
 msTms2 :: Board2 -> [Move] -> [Move2]
 msTms2 _ [] = []
-msTms2 brd (m:ms) = mTm2 brd m : msTms2 brd' ms
+msTms2 brd (m:ms) = mTm2 m : msTms2 brd' ms
     where
         brd' = bTb2 $ play m $ b2Tb brd
 
@@ -80,13 +83,13 @@ b2Tb :: Board2 -> Board
 b2Tb = toBoard . fromBoard2
 
 tTt2 :: Tree -> Tree2
-tTt2 (Fork r ch) = Fork2 (bTb2 r) [(mTm2 (bTb2 r) m, tTt2 t) | (m, t) <- ch]
+tTt2 (Fork r ch) = Fork2 (bTb2 r) [(mTm2 m, tTt2 t) | (m, t) <- ch]
 
 t2Tt :: Tree2 -> Tree
 t2Tt (Fork2 r ch) = Fork (b2Tb r) [(m2Tm (b2Tb r) m, t2Tt t) | (m, t) <- ch]
 
 testMove :: (Move2, Board2) -> Move2
-testMove (m2,b2) = mTm2 b2 . toMove b . fromMove $ m2Tm b m2
+testMove (m2,b2) = mTm2 . toMove b . fromMove $ m2Tm b m2
     where
         b = b2Tb b2
 
@@ -105,6 +108,28 @@ checkMove :: [(Move2,Tree2)] -> Move2 -> Maybe Tree2
 checkMove [] m = Nothing
 checkMove ((m1,t1):fs) m = if m == m1 then Just t1 else checkMove fs m
 
+playerError :: Board2 -> Move2 -> Tree2
+playerError b m = error $ "You have made an illegal move: " ++
+        (show m) ++ " is not an available move on " ++ (show b)
+
+testerError :: Board2 -> Move2 -> Tree2
+testerError b m = error $
+        "We have made an illegal move while testing: " ++
+        (show m) ++ " is not an available move on " ++ (show b) ++
+        ". Plese report this as a bug."
+
+tryToPlay :: Tree2 -> Move -> Tree2
+tryToPlay (Fork2 b tt) m = let m2 = mTm2 m
+                            in case checkMove tt m2 of
+                                Nothing -> playerError b m2
+                                Just t -> t
+
+tryToPlay2 :: Tree2 -> Move2 -> Tree2
+tryToPlay2 (Fork2 b tt) m = case checkMove tt m of
+                Nothing -> testerError b m
+                Just t -> t
+
+
 --          Start    player1    player2    final board
 playGame :: Tree2 -> [Move2] -> [Move2] -> Board2
 playGame t [] _ = root2 t
@@ -115,7 +140,7 @@ playGame (Fork2 b2 ff) (m:ms) opponent = case checkMove ff m of
 
 testAllowedMoves :: Board2 -> [Move2]
 testAllowedMoves b2 = sort
-                    . map (mTm2 b2)
+                    . map mTm2
                     . allowedMoves
                     $ b2Tb b2
 
@@ -138,102 +163,65 @@ testComputers (b, pl) | goForIt t = ()
 
 
 testComputerFirst :: Tree2 -> Bool
-testComputerFirst t = checkStrategy t computer player2
-    where computer = getPlayerMoves1 t player2
-          player2 = magicTest2 t computer
+testComputerFirst t = checkStrategy computer1 magicTest2 t
 
 testComputerSecond :: Tree2 -> Bool
-testComputerSecond t = checkStrategy t player1 computer
-    where computer = getPlayerMoves2 t player1
-          player1 = magicTest2 t computer
+testComputerSecond t = not $ checkStrategy magicTest1 computer2 t
 
-checkStrategy :: Tree2 -> [Move2] -> [Move2] -> Bool
-checkStrategy t2 [] _ = False
+computer1 = translateStrat computerFirst
+computer2 = translateStrat' computerSecond
 
-checkStrategy t2 (m:_) [] = case checkMove (children2 t2) m of
-                Nothing -> error $
-                    "Player 1 has made an illegal move which should have been spotted earlier in the Test. Please report this as a bug."
-                Just _  -> True
-checkStrategy t2 (m:ms) (opp:oppMoves) =
-    let subtree' = case checkMove (children2 t2) m of
-                Nothing -> error $
-                    "Player 1 has made an illegal move which should have been spotted earlier in the Test. Please report this as a bug."
-                Just t  -> t
-        subtree  = case checkMove (children2 subtree') opp of
-                Nothing -> error $
-                    "Player 2 has made an illegal move which should have been spotted earlier in the Test. Please report this as a bug."
-                Just t  -> t
-    in checkStrategy subtree ms oppMoves
+checkStrategy :: (Tree2 -> [Move2] -> [Move2])
+              -> (Tree2 -> [Move2] -> [Move2])
+              -> Tree2 -> Bool
+checkStrategy p1 p2 t = let game = playStrats p1 p2 t
+                         in winner game
 
-getPlayerMoves1 :: Tree2 -> [Move2] -> [Move2]
-getPlayerMoves1 tree m2s =
-   let playerMoves = rewritePlayerMoves tree m2s $ computerFirst (t2Tt tree) oppMoves
-       oppMoves = rewriteOppMoves tree m2s playerMoves
-    in playerMoves
+--First player win is True, second is False
+--We can simply check the length: a first player win has an odd number
+--of moves, a second an even number
+winner :: [Move2] -> Bool
+winner = odd . length
 
-getPlayerMoves2 :: Tree2 -> [Move2] -> [Move2]
-getPlayerMoves2 t [] = map (mTm2 (root2 t)) $ computerSecond (t2Tt t) []
-getPlayerMoves2 t@(Fork2 board tt) mm@(m2:m2s) = 
-    let m = m2Tm (b2Tb board) m2
-        t' = case checkMove tt m2 of
-               Nothing -> error $ "We've made an illegal move while checking computerSecond. Please report this as a bug."
-               Just t2 -> t2
-        oppMoves = case playerMoves of
-                     [] -> []
-                     (m':m's) -> let t'' = case checkMove (children2 t') m' of
-                                            Nothing -> error $ "You've made an illegal move"
-                                            Just x -> x
-                                     in rewriteOppMoves t'' m2s playerMoves
-        playerMoves = rewritePlayerMoves t' m2s $ computerSecond (t2Tt t) (m:oppMoves)
-        t'' = undefined
-     in playerMoves
+playStrats :: (Tree2 -> [Move2] -> [Move2])
+           -> (Tree2 -> [Move2] -> [Move2])
+           -> Tree2 -> [Move2]
+playStrats p1 p2 t = let p1moves = p1 t p2moves
+                         p2moves = p2 t p1moves
+                      in intercal p1moves p2moves
 
-rewritePlayerMoves :: Tree2 -> [Move2] -> [Move] -> [Move2]
-rewritePlayerMoves _ _ [] = []
-rewritePlayerMoves t2 [] (m:ms) = case ms of
-        [] -> [m2]
-        _  -> error $ "You've continued to play after the final move " ++ (show m2)
-                ++ " on board "++ (show board)
+--for first player strategies
+translateStrat :: (Tree -> [Move] -> [Move])
+               -> Tree2 -> [Move2] -> [Move2]
+translateStrat strat tree moves = msTms2 board $ playerMoves
     where
-        board = root2 t2
-        m2 = mTm2 board m
-rewritePlayerMoves t2@(Fork2 board2 ff) (oppMove:responses) (m : ms) =
-    let m2 = mTm2 board2 m
-        subtree' = case checkMove ff m2 of
-                Nothing -> error $ "You've made an illegal move: " ++ (show m2) ++ 
-                    " is not a valid move in " ++ (show board2)
-                Just t2 -> t2
-        subtree = case checkMove (children2 subtree') oppMove of
-                Nothing -> error $ 
-                    "We've made an illegal move while testing: " ++
-                    (show m2) ++  " is not a valid move in " ++ (show board2) ++
-                    ". Please report this as a bug."
-                Just t2 -> t2
-     in m2 : rewritePlayerMoves subtree responses ms
+        playerMoves = strat tree' moves'
+        board = root2 tree
+        tree' = t2Tt tree
+        moves' = moveTester2 tree playerMoves moves
 
+--for second player strategies
+translateStrat' :: (Tree -> [Move] -> [Move])
+               -> Tree2 -> [Move2] -> [Move2]
+translateStrat' strat tree moves = msTms2 board $ playerMoves
+    where
+        playerMoves = strat tree' moves'
+        board = root2 tree
+        tree' = t2Tt tree
+        moves' = moveTester1 tree playerMoves moves
 
---                 state    opponent   player
-rewriteOppMoves :: Tree2 -> [Move2] -> [Move2] -> [Move]
-rewriteOppMoves _ [] _ = []
-rewriteOppMoves t2@(Fork2 board []) os@(oppMove:responses) [] = 
-     error $
-         "It seems we've tried to keep playing after you lost on board " ++ (show board) ++
-         ". Please report this as a bug."
-rewriteOppMoves t2@(Fork2 board []) os@(oppMove:responses) (m:ms) = 
-     error $ "You've tried to play when there were no legal moves on board " ++ (show board)
-rewriteOppMoves t2@(Fork2 board ff) os@(oppMove:responses) (m:ms) = 
-    let oppMove' = m2Tm (b2Tb board) oppMove
-        subtree' = case checkMove ff m of
-            Nothing ->  error $ "You've made an illegal move: " ++ (show m) ++ 
-                " is not a valid move in " ++ (show board)
-            Just t2 -> t2
-        subtree = case checkMove (children2 subtree') oppMove of
-            Nothing -> error $ "We've made an illegal move while testing: " ++
-                (show m) ++  " is not a valid move in " ++ (show board) ++
-                    ". Please report this as a bug."
-            Just t2 -> t2
-     in oppMove' : (rewriteOppMoves subtree responses ms)
+moveTester2 :: Tree2 -> [Move] -> [Move2] -> [Move]
+moveTester2 t [] _ = []
+moveTester2 t (m:ms) ys = moveTester1 t' ms ys
+    where
+        t' = tryToPlay t m
 
+moveTester1 :: Tree2 -> [Move] -> [Move2] -> [Move]
+moveTester1 t _ [] = []
+moveTester1 t ms (y:ys) = y' : moveTester2 t' ms ys
+    where
+        t' = tryToPlay2 t y
+        y' = m2Tm (b2Tb $ root2 t) y
 
 ----------------
 -- Some magic --
