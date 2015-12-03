@@ -1,11 +1,29 @@
-
 default: tests
 
-tests: 
+tests: check-up-to-date
 	@echo "  I will now run your solution with some inputs, so you get an"
 	@echo "  indication of the mark you might get."
 	@echo ""
 	runhaskell TestBench
 
 
-.PHONY: tests 
+check-up-to-date:
+	@grep -q "fromMove'" GameExercise.hs || ( \
+		\
+		echo; \
+		echo "* Error: Since 3 December, you can choose to implement either fromMove or fromMove'. "; \
+		echo; \
+		echo "  Please add these two lines to your GameExercise.hs:"; \
+		echo; \
+		echo "      fromMove' :: Board -> Move -> (Int, Int, Player)"; \
+		echo "      fromMove' b = fromMove"; \
+		echo; \
+		echo "  (but remove the spaces in front of the lines). Then you"; \
+		echo "  can choose to implement either fromMove or fromMove'."; \
+		echo; \
+		echo "  This error message will then automatically go away."; \
+		echo; \
+		false )
+
+
+.PHONY: tests check-up-to-date

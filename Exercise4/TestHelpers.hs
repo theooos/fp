@@ -9,7 +9,7 @@ import Control.Applicative
 import Control.Monad
 
 import safe GameExercise
-    (Player(..), Board, Move, Tree(..), LRand(..), Seed, evalRand, getRandom, play, allowedMoves, treeOf, computerFirst, computerSecond, randomFirst, randomSecond, computerFirstHeuristic, computerSecondHeuristic, toBoard, fromBoard, toMove, fromMove)
+    (Player(..), Board, Move, Tree(..), LRand(..), Seed, evalRand, getRandom, play, allowedMoves, treeOf, computerFirst, computerSecond, randomFirst, randomSecond, computerFirstHeuristic, computerSecondHeuristic, toBoard, fromBoard, toMove, fromMove')
 
 -- Convention: (width, height)
 type BoardSize = (Int, Int)
@@ -64,15 +64,15 @@ fromMove2 (M2 pl (x,y)) = (x,y,pl)
 sortMoveList :: (Int, Int, [(Int, Int)], Player) -> (Int, Int, [(Int, Int)], Player)
 sortMoveList (a, b, l, d) = (a, b, sort l, d)
 
-mTm2 :: Move -> Move2
-mTm2 = toMove2 . fromMove
+mTm2 :: Board -> Move -> Move2
+mTm2 b = toMove2 . fromMove' b
 
 m2Tm :: Board -> Move2 -> Move
 m2Tm b = toMove b . fromMove2
 
 msTms2 :: Board2 -> [Move] -> [Move2]
 msTms2 _ [] = []
-msTms2 brd (m:ms) = mTm2 m : msTms2 brd' ms
+msTms2 brd (m:ms) = mTm2 (b2Tb brd) m : msTms2 brd' ms
     where
         brd' = bTb2 $ play m $ b2Tb brd
 
@@ -83,18 +83,18 @@ b2Tb :: Board2 -> Board
 b2Tb = toBoard . fromBoard2
 
 tTt2 :: Tree -> Tree2
-tTt2 (Fork r ch) = Fork2 (bTb2 r) [(mTm2 m, tTt2 t) | (m, t) <- ch]
+tTt2 (Fork r ch) = Fork2 (bTb2 r) [(mTm2 r m, tTt2 t) | (m, t) <- ch]
 
 t2Tt :: Tree2 -> Tree
 t2Tt (Fork2 r ch) = Fork (b2Tb r) [(m2Tm (b2Tb r) m, t2Tt t) | (m, t) <- ch]
 
 testMove :: (Move2, Board2) -> Move2
-testMove (m2,b2) = mTm2 . toMove b . fromMove $ m2Tm b m2
+testMove (m2,b2) = mTm2 b . toMove b . fromMove' b $ m2Tm b m2
     where
         b = b2Tb b2
 
 testMove' :: ((Int, Int, Player), Board2) -> (Int, Int, Player)
-testMove' (m2,b2) = fromMove . toMove b $ m2
+testMove' (m2,b2) = fromMove' b . toMove b $ m2
     where
         b = b2Tb b2
 
@@ -119,7 +119,7 @@ testerError b m = error $
         ". Plese report this as a bug."
 
 tryToPlay :: Tree2 -> Move -> Tree2
-tryToPlay (Fork2 b tt) m = let m2 = mTm2 m
+tryToPlay (Fork2 b tt) m = let m2 = mTm2 (b2Tb b) m
                             in case checkMove tt m2 of
                                 Nothing -> playerError b m2
                                 Just t -> t
@@ -140,7 +140,7 @@ playGame (Fork2 b2 ff) (m:ms) opponent = case checkMove ff m of
 
 testAllowedMoves :: Board2 -> [Move2]
 testAllowedMoves b2 = sort
-                    . map mTm2
+                    . map (mTm2 (b2Tb b2))
                     . allowedMoves
                     $ b2Tb b2
 
@@ -163,13 +163,15 @@ testComputers (b, pl) | goForIt t = ()
 
 
 testComputerFirst :: Tree2 -> Bool
-testComputerFirst t = checkStrategy computer1 magicTest2 t
+testComputerFirst t = checkStrategy computer1 magic2 t
 
 testComputerSecond :: Tree2 -> Bool
-testComputerSecond t = not $ checkStrategy magicTest1 computer2 t
+testComputerSecond t = not $ checkStrategy magic1 computer2 t
 
 computer1 = translateStrat computerFirst
 computer2 = translateStrat' computerSecond
+magic1 = translateStrat magicTest1
+magic2 = translateStrat' magicTest2
 
 checkStrategy :: (Tree2 -> [Move2] -> [Move2])
               -> (Tree2 -> [Move2] -> [Move2])
@@ -235,6 +237,21 @@ doMagic = toss magicNumber
     magicRing d r = if d > r then (\ n -> r) else rock magicRing (r-) d
     rock a d c = a c (d c)
 
+magicTest1 t ms = let t2 = tTt2 t
+                      ts = children2 t2
+                      b  = root2 t2
+                   in if null ts then [] else
+                   let mt = ts !! doMagic (length ts)
+                       m' = m2Tm (b2Tb b) (fst mt)
+                       t' = t2Tt $ snd mt
+                    in m' : magicTest2 t' ms
+
+magicTest2 t [] = []
+magicTest2 t (m:ms) = let t2 = tTt2 t
+                          t' = tryToPlay t2 m
+                       in magicTest1 (t2Tt t') ms
+
+                    {-
 magicTest1 (Fork2 _ []) _ = []
 magicTest1 (Fork2 _ ts) [] = [ fst $ ts !! doMagic (length ts) ]
 magicTest1 (Fork2 _ ts) (m:ms) =
@@ -253,6 +270,7 @@ magicTest2 (Fork2 board ts) (m:ms) =
                           (show m) ++ " is not a legal move on " ++ (show board)
                       Just t2 -> t2
                in magicTest1 t ms
+-}
 
 ---------------------
 ---------------------
