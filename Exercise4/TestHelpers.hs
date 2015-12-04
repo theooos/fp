@@ -108,15 +108,10 @@ checkMove :: [(Move2,Tree2)] -> Move2 -> Maybe Tree2
 checkMove [] m = Nothing
 checkMove ((m1,t1):fs) m = if m == m1 then Just t1 else checkMove fs m
 
-playerError :: Board2 -> Move2 -> Tree2
-playerError b m = error $ "You have made an illegal move: " ++
-        (show m) ++ " is not an available move on " ++ (show b)
-
-testerError :: Board2 -> Move2 -> Tree2
-testerError b m = error $
-        "We have made an illegal move while testing: " ++
+playerError :: Board2 -> Move2 -> a
+playerError b m = error $ "An illegal move has been made: " ++
         (show m) ++ " is not an available move on " ++ (show b) ++
-        ". Plese report this as a bug."
+    ". If this was not your player, please report this as a bug."
 
 tryToPlay :: Tree2 -> Move -> Tree2
 tryToPlay (Fork2 b tt) m = let m2 = mTm2 (b2Tb b) m
@@ -126,7 +121,7 @@ tryToPlay (Fork2 b tt) m = let m2 = mTm2 (b2Tb b) m
 
 tryToPlay2 :: Tree2 -> Move2 -> Tree2
 tryToPlay2 (Fork2 b tt) m = case checkMove tt m of
-                Nothing -> testerError b m
+                Nothing -> playerError b m
                 Just t -> t
 
 
@@ -134,7 +129,7 @@ tryToPlay2 (Fork2 b tt) m = case checkMove tt m of
 playGame :: Tree2 -> [Move2] -> [Move2] -> Board2
 playGame t [] _ = root2 t
 playGame (Fork2 b2 ff) (m:ms) opponent = case checkMove ff m of
-                    Nothing -> error $ "An illegal move has been made, and not caught somewhere more sensible."
+                    Nothing -> playerError b2 m
                     Just t  -> playGame t opponent ms
 
 
@@ -156,74 +151,29 @@ testComputers :: (Board2, Player) -> ()
 testComputers (b, pl) | goForIt t = ()
                       | otherwise = error $ plName ++ " should have won on the board " ++ show b
     where
-        t = tTt2 $ treeOf $ b2Tb b
+        t = treeOf $ b2Tb b
+        firstWins = pl == bPlayer b
 
-        (goForIt,plName) | pl == PH  = (testComputerFirst,  "computerFirst")
+        (goForIt,plName) | firstWins = (testComputerFirst,  "computerFirst")
                          | otherwise = (testComputerSecond, "computerSecond")
 
 
-testComputerFirst :: Tree2 -> Bool
-testComputerFirst t = checkStrategy computer1 magic2 t
+testComputerFirst :: Tree -> Bool
+testComputerFirst t = checkStrategy computerFirst magicTest2 t
 
-testComputerSecond :: Tree2 -> Bool
-testComputerSecond t = not $ checkStrategy magic1 computer2 t
+testComputerSecond :: Tree -> Bool
+testComputerSecond t = not $ checkStrategy magicTest1 computerSecond t
 
-computer1 = translateStrat computerFirst
-computer2 = translateStrat' computerSecond
-magic1 = translateStrat magicTest1
-magic2 = translateStrat' magicTest2
-
-checkStrategy :: (Tree2 -> [Move2] -> [Move2])
-              -> (Tree2 -> [Move2] -> [Move2])
-              -> Tree2 -> Bool
-checkStrategy p1 p2 t = let game = playStrats p1 p2 t
-                         in winner game
+checkStrategy :: (Tree -> [Move] -> [Move])
+              -> (Tree -> [Move] -> [Move])
+              -> Tree -> Bool
+checkStrategy p1 p2 t = p1wins $ iplay (p1 t) (p2 t)
 
 --First player win is True, second is False
 --We can simply check the length: a first player win has an odd number
 --of moves, a second an even number
-winner :: [Move2] -> Bool
-winner = odd . length
-
-playStrats :: (Tree2 -> [Move2] -> [Move2])
-           -> (Tree2 -> [Move2] -> [Move2])
-           -> Tree2 -> [Move2]
-playStrats p1 p2 t = let p1moves = p1 t p2moves
-                         p2moves = p2 t p1moves
-                      in intercal p1moves p2moves
-
---for first player strategies
-translateStrat :: (Tree -> [Move] -> [Move])
-               -> Tree2 -> [Move2] -> [Move2]
-translateStrat strat tree moves = msTms2 board $ playerMoves
-    where
-        playerMoves = strat tree' moves'
-        board = root2 tree
-        tree' = t2Tt tree
-        moves' = moveTester2 tree playerMoves moves
-
---for second player strategies
-translateStrat' :: (Tree -> [Move] -> [Move])
-               -> Tree2 -> [Move2] -> [Move2]
-translateStrat' strat tree moves = msTms2 board $ playerMoves
-    where
-        playerMoves = strat tree' moves'
-        board = root2 tree
-        tree' = t2Tt tree
-        moves' = moveTester1 tree playerMoves moves
-
-moveTester2 :: Tree2 -> [Move] -> [Move2] -> [Move]
-moveTester2 t [] _ = []
-moveTester2 t (m:ms) ys = moveTester1 t' ms ys
-    where
-        t' = tryToPlay t m
-
-moveTester1 :: Tree2 -> [Move] -> [Move2] -> [Move]
-moveTester1 t _ [] = []
-moveTester1 t ms (y:ys) = y' : moveTester2 t' ms ys
-    where
-        t' = tryToPlay2 t y
-        y' = m2Tm (b2Tb $ root2 t) y
+p1wins :: [a] -> Bool
+p1wins = odd . length
 
 ----------------
 -- Some magic --
