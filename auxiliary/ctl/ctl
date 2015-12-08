@@ -11,7 +11,7 @@
 alive=()
 
 # iterate through a subset of machines in UG04
-for suffix in {30..100}; do
+for suffix in {30..99}; do
 
 	# ping each one
 	ping -c 1 -t 1 "cca-ug04-130$suffix" > /dev/null 2>&1
