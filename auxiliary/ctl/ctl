@@ -2,6 +2,11 @@
 
 # Script to connect to a school computer. Presumably by George Brighton.
 
+# You can install this script by typing:
+#
+#     curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/install' | bash -
+
+
 # will hold available machine hostnames
 alive=()
 
