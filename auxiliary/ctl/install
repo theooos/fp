@@ -5,7 +5,7 @@
 
 # You can download and run this script by typing:
 #
-#     curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/ctl' | bash -
+#     curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/install' | bash -
 
 # Abort on error.
 set -ex
