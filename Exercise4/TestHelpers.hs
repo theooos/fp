@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Unsafe #-}
+{-# LANGUAGE BangPatterns #-}
 module TestHelpers where
 
 import Data.List hiding (sortOn)
@@ -7,9 +8,14 @@ import Data.Word
 import System.Random
 import Control.Applicative
 import Control.Monad
+import Control.Exception (assert, catch, SomeException)
+import System.Timeout
+import Data.Time.Clock
+import System.Mem
 
 import safe GameExercise
     (Player(..), Board, Move, Tree(..), LRand(..), Seed, evalRand, getRandom, play, allowedMoves, treeOf, computerFirst, computerSecond, randomFirst, randomSecond, computerFirstHeuristic, computerSecondHeuristic, toBoard, fromBoard, toMove, fromMove')
+import qualified TestHelpersSecret as S
 
 -- Convention: (width, height)
 type BoardSize = (Int, Int)
@@ -75,6 +81,13 @@ msTms2 _ [] = []
 msTms2 brd (m:ms) = mTm2 (b2Tb brd) m : msTms2 brd' ms
     where
         brd' = bTb2 $ play m $ b2Tb brd
+
+ms2Tms :: Board -> [Move2] -> [Move]
+ms2Tms _ [] = []
+ms2Tms brd (m2:m2s) = m : ms2Tms brd' m2s
+    where
+        m = m2Tm brd m2
+        brd' = play m brd
 
 bTb2 :: Board -> Board2
 bTb2 = toBoard2 . fromBoard
@@ -174,6 +187,30 @@ checkStrategy p1 p2 t = p1wins $ iplay (p1 t) (p2 t)
 --of moves, a second an even number
 p1wins :: [a] -> Bool
 p1wins = odd . length
+
+
+-- Better testing computerFirst/computerSecond
+----------------------------------------------
+
+checkOptimalPlay :: S.Tree -> [S.Move] -> ()
+checkOptimalPlay (S.Fork _ []) [] = ()
+checkOptimalPlay tree        [] = error $ "The moves end prematurely for the board"
+                                       ++ show (bTb2S $ S.root tree)
+checkOptimalPlay tree    (m:ms) = case lookup m (S.optimalMoves tree) of
+      Nothing       -> error $ "Found a non-optimal move " ++ show (mTm2S m)
+                            ++ " in a play for the board " ++ show (bTb2S $ S.root tree)
+      Just subtree -> checkOptimalPlay subtree ms
+
+testComputersA :: (Player, Board2) -> ()
+testComputersA (PH, board2) = checkOptimalPlay (S.treeOf $ bTbS board) moves
+  where
+    board = b2Tb  board2
+    moves = msTmsS' board2 (iplaySSecond board (computerFirst . treeOf) (S.computerSecond . S.treeOf))
+
+testComputersA (PV, board2) = checkOptimalPlay (S.treeOf $ bTbS board) moves
+  where
+    board  = b2Tb  board2
+    moves = msTmsS' board2 (iplaySFirst board (S.computerFirst . S.treeOf) (computerSecond . treeOf))
 
 ----------------
 -- Some magic --
@@ -298,8 +335,12 @@ randomTraceFromBoard (seed, b2) = randomTraceFromTree2 seed (normCheckTree2 $ tT
   where
     b = b2Tb b2
 
---- Testing randomness
-----------------------
+testTree :: Board2 -> Tree2
+testTree b = normCheckTree2 $ tTt2 $ treeOf (b2Tb b)
+
+------------------------
+-- Testing randomness --
+------------------------
 enoughRandomMoves :: (Board2, Int) -> Bool
 enoughRandomMoves (brd2, seed)
         | not allMovesCorrect = error $ "not all generated moves for the board " ++ show brd2 ++ " were correct"
@@ -336,7 +377,7 @@ enoughRandomMoves (brd2, seed)
 
         checkOnePlay :: [Move2] -> Bool
         checkOnePlay moves =
-            playGame (tTt2 gameTree) (odds moves) (evens moves) `seq` True
+            playGame (tTt2 gameTree) (evens moves) (odds moves) `seq` True
 
 uniq :: Eq a => [a] -> [a]
 uniq (a1:a2:xs)
@@ -358,6 +399,12 @@ rplay gen f g = iplay (\xs -> evalRand (f xs) seed) (\xs -> evalRand (g xs) seed
     where
         seed = mkStdGen gen
 
+rplayS :: Int -> ([a] -> S.LRand [a]) -> ([a] -> S.LRand [a]) -> [a]
+rplayS gen f g = iplay (\xs -> S.evalRand (f xs) seed) (\xs -> S.evalRand (g xs) seed)
+    where
+        seed = mkStdGen gen
+
+
 iplay :: ([a]->[a]) -> ([a]->[a]) -> [a]
 iplay f g = intercal ys xs
     where
@@ -368,14 +415,335 @@ intercal :: [a] -> [a] -> [a]
 intercal []     ys = ys
 intercal (x:xs) ys = x : intercal ys xs
 
-evens :: [a] -> [a]
-evens [] = []
-evens (x:xs) = odds xs
+intercal' :: [a] -> [a] -> [a]
+intercal' ys []     = ys
+intercal' ys (x:xs) = x : intercal xs ys
+
 
 odds :: [a] -> [a]
+odds (x:xs) = evens xs
 odds [] = []
-odds (x:xs) = x:evens xs
+
+evens :: [a] -> [a]
+evens (x:xs) = x:odds xs
+evens [] = []
 
 
 whoSMove (M2 pl _) = pl
 
+------------------------
+-- Testing heuristics --
+------------------------
+type Strat  = (Board -> [Move] -> [Move])
+type StratS = (S.Board -> [S.Move] -> [S.Move])
+
+
+-- Preliminaries
+----------------
+-- (There are a lot of undefineds because we don't need those arguments)
+
+-- moves
+mTm2S :: S.Move -> Move2
+mTm2S = toMove2 . n3T3Si . S.fromMove' undefined
+
+m2TmS :: Move2 -> S.Move
+m2TmS = S.toMove undefined . n3T3S . fromMove2
+
+mTmS :: Board -> Move -> S.Move
+mTmS b = S.toMove undefined . n3T3S . fromMove' b
+
+mTmSi :: Board -> S.Move -> Move
+mTmSi b = toMove b . n3T3Si . S.fromMove' undefined
+
+msTmsS' :: Board2 -> [Move] -> [S.Move]
+msTmsS' b = map m2TmS . msTms2 b
+
+
+-- boards
+bTb2S :: S.Board -> Board2
+bTb2S = toBoard2 . n4T4Si . S.fromBoard
+
+b2TbS :: Board2 -> S.Board
+b2TbS = S.toBoard . n4T4S . fromBoard2
+
+bTbS :: Board -> S.Board
+bTbS = S.toBoard . n4T4S . fromBoard
+
+bTbSi :: S.Board -> Board
+bTbSi = toBoard . n4T4Si . S.fromBoard
+
+-- trees
+tTt2S :: S.Tree -> Tree2
+tTt2S (S.Fork r ch) = Fork2 (bTb2S r) [(mTm2S m, tTt2S t) | (m, t) <- ch]
+
+t2TtS :: Tree2 -> S.Tree
+t2TtS (Fork2 r ch) = S.Fork (b2TbS r) [(m2TmS m, t2TtS t) | (m, t) <- ch]
+
+-- players
+pTpS :: Player -> S.Player
+pTpS PH = S.PH
+pTpS PV = S.PV
+
+pTpSi :: S.Player -> Player
+pTpSi S.PH = PH
+pTpSi S.PV = PV
+
+-- n-tuple conversions
+n4T4S  :: (a, b, c, Player)   -> (a, b, c, S.Player)
+n4T4S (a,b,c,p) = (a,b,c, pTpS p)
+
+n4T4Si :: (a, b, c, S.Player) -> (a, b, c, Player)
+n4T4Si (a,b,c,p) = (a,b,c, pTpSi p)
+
+n3T3S  ::(a, b, Player)   -> (a, b, S.Player)
+n3T3S (a,b,p) = (a,b, pTpS p)
+
+n3T3Si ::(a, b, S.Player) -> (a, b, Player)
+n3T3Si (a,b,p) = (a,b, pTpSi p)
+
+
+-- Fixing business
+------------------
+
+data LNat = Zero | Succ LNat deriving (Show)
+
+llength [] = Zero
+llength (_:xs) = Succ(llength xs)
+
+trace x = error(show x)
+
+droplast [] = []
+droplast [x] = []
+droplast (x:xs) = x:droplast xs
+
+-- iplay with S playing first:
+iplaySFirst :: Board -> (S.Board -> [S.Move] -> [S.Move]) -> (Board -> [Move] -> [Move]) -> [Move]
+iplaySFirst board helen ryan = moves
+  where -- primed things are in S types
+   hs' :: [S.Move]
+   hs' = helen board' rs'
+   rs :: [Move]
+   rs = ryan board hs
+   moves :: [Move]
+   moves = intercal hs rs
+   boards :: [Board]
+   boards = f board moves
+             where
+               f :: Board -> [Move] -> [Board]
+               f b xs = b : case xs of
+                             [] -> []
+                             (m:ms) -> f (play m b) ms
+   board' :: S.Board
+   board' = bTbS board
+   hbs :: [S.Board]
+   hbs = map bTbS (evens boards)
+   rbs :: [Board]
+   rbs = odds boards
+   hs :: [Move]
+   hs = zipWith (flip f) hs' hbs -- the flipping is for laziness (in the technical sense)
+           where
+             f :: S.Board -> S.Move -> Move
+             f b = mTmSi (bTbSi b)
+   rs' :: [S.Move]
+   rs' = zipWith (flip f) rs rbs
+           where
+             f :: Board -> Move -> S.Move
+             f = mTmS
+
+-- iplay with S playing second:
+iplaySSecond :: Board -> (Board -> [Move] -> [Move]) -> (S.Board -> [S.Move] -> [S.Move]) -> [Move]
+iplaySSecond board ryan helen = moves
+  where -- primed things are in S types
+   hs' :: [S.Move]
+   hs' = helen board' rs'
+   rs :: [Move]
+   rs = ryan board hs
+   moves :: [Move]
+   moves = intercal rs hs
+   boards :: [Board]
+   boards = f board moves
+             where
+               f :: Board -> [Move] -> [Board]
+               f b xs = b : case xs of
+                             [] -> []
+                             (m:ms) -> f (play m b) ms
+   board' :: S.Board
+   board' = bTbS board
+   hbs :: [S.Board]
+   hbs = map bTbS (odds boards)
+   rbs :: [Board]
+   rbs = evens boards
+   hs :: [Move]
+   hs = zipWith (flip f) hs' hbs -- the flipping is for laziness (in the technical sense)
+           where
+             f :: S.Board -> S.Move -> Move
+             f b = mTmSi (bTbSi b)
+   rs' :: [S.Move]
+   rs' = zipWith (flip f) rs rbs
+           where
+             f :: Board -> Move -> S.Move
+             f = mTmS
+
+-- Testing logic
+----------------
+
+playVrand1 :: Board -> (Strat,StratS) -> [Move]
+playVrand1 b (strat1, strats2) = iplaySSecond b strat1 strats2
+
+playVrand2 :: Board -> (Strat,StratS) -> [Move]
+playVrand2 b (strat1, strats2) = iplaySFirst b strats2 strat1
+
+
+--the boolean says whether the player is first or second.
+playVrand :: (Bool,Board) -> (Strat, StratS) -> [Move]
+playVrand (True,b)  s = playVrand1 b s
+playVrand (False,b) s = playVrand2 b s
+
+opp :: Player -> Player
+opp PH = PV
+opp PV = PH
+
+playerWins :: (Bool,Board2) -> (Strat, StratS) -> Bool
+playerWins (cond,b) strat = (p1wins game) == cond
+    where
+        game = playVrand (cond, (b2Tb b)) strat
+
+--Only works for player 1!
+timePlay :: Int -> (Bool, Board2) -> (Strat, StratS) -> IO (Maybe (Bool, Int))
+timePlay timeLeft board strategies =
+     performGC >> timeout timeLeft play
+    where
+        --we need to do some exception handling here!
+        --TODO do stg?
+        play = play'
+
+        play' = do
+            startTime <- getCurrentTime
+            let !winner = playerWins board strategies
+            endTime <- getCurrentTime
+            let timeDiff = truncate (endTime `diffUTCTime` startTime)
+            return $ (winner, timeDiff)
+
+-- returns list of win/loss with total time taken
+timePlays :: Int -> [((Bool,Board2), (Strat, Strat), (StratS, StratS))] -> IO ([Bool],Int)
+timePlays time0 [] = return ([],time0)
+timePlays time0 ((b ,strats1, strats2):ms)  = do
+   play1 <- timePlay time0 b strat
+
+   case play1 of
+     Nothing -> do
+          putStrLn "Time is up!"
+          return ([],time0) --we treat nothing as timing out.
+
+     Just (player,time) -> do
+          putStrLn $ "\tYou " ++ (if player then "WON" else "LOST") ++ " against our AI on board " ++ show (snd b)
+
+          (games, timeRest) <- timePlays time1 ms
+          return ((player:games),time1+timeRest)
+        where time1 = time0 - time
+  where
+    strat | fst b == True = (fst strats1, snd strats2)
+          | otherwise     = (snd strats1, fst strats2)
+
+
+testHeuristicsAgainstRandom :: [(Int, (Bool, (Int, Int)))] -> IO Bool
+testHeuristicsAgainstRandom inputs = do
+        (bools,_) <- timePlays timeLimit allInputs
+
+        let winnedBoards = playsOutcome bools
+
+        -- 3 points every time the heuristics beats the random bot on average
+        putStrLn $ "\nCounting points (majority of wins on a board gives 3 points): "
+                   ++ show (3 * countWins winnedBoards)
+        putStrLn "Note that this is just provisional. The points are not added to the expected mark.\n"
+
+        return True -- ==> we continue with testing
+    where
+        timeLimit = 6000000
+        strats1      = (computerFirstHeuristic, computerSecondHeuristic)
+        strats2 seed = (randCover seed (S.randomFirst . S.treeOf), randCover seed (S.randomSecond . S.treeOf))
+
+        randCover :: Int -> (S.Board -> [S.Move] -> S.LRand [S.Move]) -> (S.Board -> [S.Move] -> [S.Move])
+        randCover seed f brd = (\xs -> S.evalRand (f brd xs) (mkStdGen seed))
+
+        -- We replicate every input 5-times with 5 slightliy different seeds.
+        allInputs = concat $ map repl inputs
+        repl i = unfoldr genInp (0,i)
+
+        genInp (n,(gen,(firstWins, dim)))
+                | n < 5 = Just (((firstWins, brd), strats1, strats2 gen), (n+1, (gen+1, (firstWins, dim))))
+                | otherwise = Nothing
+            where
+                brd = toBoard2 (fst dim, snd dim, [], PH)
+
+        playsOutcome [] = []
+        playsOutcome bools = (countWins (take 5 bools) >= 3) : playsOutcome (drop 5 bools)
+
+
+-- markHeuristicsVSRandom :: String -> ([(Int, (Bool, (Int, Int)))] -> Bool) -> [[(Int, (Bool, (Int, Int)))]] -> [Bool] -> IO Bool
+markHeuristicsVSRandom :: String -> (a -> Bool) -> [a] -> [Bool] -> IO Bool
+markHeuristicsVSRandom name f inputs spec = do
+    -- putStr $ "  [testing] " ++ name ++ "... "
+    putStrLn $ "  [testing] against random... "
+
+    testHeuristicsAgainstRandom inps
+    where
+        -- TODO generate these numbers randomly for actual marking
+        inps :: [(Int, (Bool, (Int, Int)))]
+        inps = [ (1, (False, (5,4)))
+               , (2, (True,  (6,4)))
+               , (3, (False, (5,5)))
+               , (4, (True,  (6,5)))
+               , (5, (True,  (6,6)))
+               -- , (5, (True,  (5,6))) -- TODO instead?
+               ]
+
+testHeuristicsAgainstMartin :: [(Int, (Bool, (Int, Int)))] -> IO Bool
+testHeuristicsAgainstMartin inputs = do
+        (bools,_) <- timePlays timeLimit allInputs
+
+        -- 3 points every time the heuristics beats the random bot on average
+        putStrLn $ "\nCounting points (majority of wins on a board gives 2 points): "
+                   ++ show (2 * countWins bools)
+        putStrLn "Note that this is just provisional. The points are not added to the expected mark.\n"
+
+        return True -- ==> we continue with testing
+    where
+        timeLimit = 3000000
+        strats1 = (  computerFirstHeuristic,   computerSecondHeuristic)
+        strats2 = (S.computerFirstHeuristic, S.computerSecondHeuristic)
+
+        allInputs = map fixInput inputs
+
+        fixInput (gen, (firstWins, dim)) = ((firstWins, brd), strats1, strats2)
+            where
+                brd' = b2TbS $ B2 dim [] PH
+                allowed = S.allowedMoves brd'
+                move = allowed !! (gen `mod` length allowed)
+                brd = bTb2S $ S.play move brd'
+
+
+markHeuristicsVSMartin :: String -> (a -> Bool) -> [a] -> [Bool] -> IO Bool
+markHeuristicsVSMartin name f inputs spec = do
+    -- putStr $ "  [testing] " ++ name ++ "... "
+    putStrLn $ "  [testing] against Martin... "
+
+    -- TODO hardcode numbers for actual markings
+    seeds <- replicateM (length inps) (randomIO :: IO Int)
+
+    testHeuristicsAgainstMartin $ zip seeds inps
+    where
+        inps :: [((Bool, (Int, Int)))]
+        inps = [ (True, (6,5))
+               , (True, (6,5))
+               , (True, (6,5))
+               , (True, (6,5))
+               , (True, (6,5))
+               ]
+
+
+notMarking :: Bool
+notMarking = error "Marking not implemented for this test, look at the output."
+
+countWins :: [Bool] -> Int
+countWins = length . filter (&&True)

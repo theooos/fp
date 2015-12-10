@@ -1,10 +1,20 @@
+
+SDIR = secrets
+
+# File that indicates whether we made the ghc package database already.
+GHC_INDIC = $(SDIR)/ghc/secrets-1.0.0.0.conf
+
+GHCOPT = -package-db=secrets/ghc
+
 default: tests
 
-tests: check-up-to-date
+# Set up the GHC package database
+
+tests: check-up-to-date $(GHC_INDIC)
 	@echo "  I will now run your solution with some inputs, so you get an"
 	@echo "  indication of the mark you might get."
 	@echo ""
-	runhaskell TestBench
+	runhaskell $(GHCOPT) TestBench
 
 
 check-up-to-date:
@@ -25,5 +35,11 @@ check-up-to-date:
 		echo; \
 		false )
 
+$(GHC_INDIC):
+	cd secrets && ghc-pkg init ghc
+	cd secrets && ghc-pkg update package-students.conf --package-db=ghc
 
-.PHONY: tests check-up-to-date
+ghci-secrets: $(GHC_INDIC)
+	ghci $(GHCOPT)
+
+.PHONY: default tests check-up-to-date

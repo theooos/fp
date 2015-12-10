@@ -4,6 +4,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+- 10 Dec 13:05: Published Test 8 and improved tests 5 and 6 (Test 7 stays the same).
+
 - 4 Dec 1:05: Published Test 6.
 
 - 3 Dec 13:20: You are now allowed to write either ``fromMove`` or ``fromMove'``. 
