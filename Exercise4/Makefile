@@ -1,16 +1,13 @@
 
 SDIR = secrets
 
-# File that indicates whether we made the ghc package database already.
-GHC_INDIC = $(SDIR)/ghc/secrets-1.0.0.0.conf
-
 GHCOPT = -package-db=secrets/ghc
 
 default: tests
 
 # Set up the GHC package database
 
-tests: check-up-to-date $(GHC_INDIC)
+tests: check-up-to-date ghc
 	@echo "  I will now run your solution with some inputs, so you get an"
 	@echo "  indication of the mark you might get."
 	@echo ""
@@ -35,11 +32,12 @@ check-up-to-date:
 		echo; \
 		false )
 
-$(GHC_INDIC):
+ghc:
+	rm -rf secrets/ghc
 	cd secrets && ghc-pkg init ghc
 	cd secrets && ghc-pkg update package-students.conf --package-db=ghc
 
-ghci-secrets: $(GHC_INDIC)
+ghci-secrets: ghc
 	ghci $(GHCOPT)
 
 .PHONY: default tests check-up-to-date
