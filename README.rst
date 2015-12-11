@@ -1,10 +1,6 @@
 Functional Programming: test benches
 ====================================
 
-Known issue
------------
-
-`"error 1" <https://github.com/uob-fp/fp/issues/1>`_. We are investigating.
 
 Version history
 ---------------
