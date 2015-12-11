@@ -9,6 +9,7 @@ import System.Random
 import Control.Applicative
 import Control.Monad
 import Control.Exception (assert, catch, SomeException)
+import Test.QuickCheck.Exception (tryEvaluateIO, AnException(..))
 import System.Timeout
 import Data.Time.Clock
 import System.Mem
@@ -682,7 +683,7 @@ testHeuristicsAgainstRandom inputs = do
 
 -- markHeuristicsVSRandom :: String -> ([(Int, (Bool, (Int, Int)))] -> Bool) -> [[(Int, (Bool, (Int, Int)))]] -> [Bool] -> IO Bool
 markHeuristicsVSRandom :: String -> (a -> Bool) -> [a] -> [Bool] -> IO Bool
-markHeuristicsVSRandom name f inputs spec = do
+markHeuristicsVSRandom name f inputs spec = protect (\e -> False) $ do
     -- putStr $ "  [testing] " ++ name ++ "... "
     putStrLn $ "  [testing] against random... "
 
@@ -724,7 +725,7 @@ testHeuristicsAgainstMartin inputs = do
 
 
 markHeuristicsVSMartin :: String -> (a -> Bool) -> [a] -> [Bool] -> IO Bool
-markHeuristicsVSMartin name f inputs spec = do
+markHeuristicsVSMartin name f inputs spec = protect (\e -> False) $ do
     -- putStr $ "  [testing] " ++ name ++ "... "
     putStrLn $ "  [testing] against Martin... "
 
@@ -747,3 +748,9 @@ notMarking = error "Marking not implemented for this test, look at the output."
 
 countWins :: [Bool] -> Int
 countWins = length . filter (&&True)
+
+-- Shamelessly stolen from QuickCheck.
+
+protect :: (AnException -> a) -> IO a -> IO a
+protect f x = either f id `fmap` tryEvaluateIO x
+
