@@ -200,6 +200,7 @@ checkOptimalPlay tree        [] = error $ "The moves end prematurely for the boa
 checkOptimalPlay tree    (m:ms) = case lookup m (S.optimalMoves tree) of
       Nothing       -> error $ "Found a non-optimal move " ++ show (mTm2S m)
                             ++ " in a play for the board " ++ show (bTb2S $ S.root tree)
+                            ++ "\nAll optimal moves: " ++ (show $ map fst $ S.optimalMoves tree)
       Just subtree -> checkOptimalPlay subtree ms
 
 testComputersA :: (Player, Board2) -> ()
@@ -604,12 +605,16 @@ opp :: Player -> Player
 opp PH = PV
 opp PV = PH
 
-playerWins :: (Bool,Board2) -> (Strat, StratS) -> Bool
-playerWins (cond,b) strat = (p1wins game) == cond
+playerWins :: (Bool,Board2) -> (Strat, StratS) -> (Bool, [Move2])
+playerWins (cond,b) strat = ((p1wins game) == cond, msTms2 b game)
     where
         game = playVrand (cond, (b2Tb b)) strat
 
 --Only works for player 1!
+--
+-- Input: timeout in microseconds.
+-- Output: if the play didn't time out: whether the player won, and the time
+--         taken in microseconds.
 timePlay :: Int -> (Bool, Board2) -> (Strat, StratS) -> IO (Maybe (Bool, Int))
 timePlay timeLeft board strategies =
      performGC >> timeout timeLeft play
@@ -620,12 +625,17 @@ timePlay timeLeft board strategies =
 
         play' = do
             startTime <- getCurrentTime
-            let !winner = playerWins board strategies
-            endTime <- getCurrentTime
-            let timeDiff = truncate (endTime `diffUTCTime` startTime)
-            return $ (winner, timeDiff)
 
--- returns list of win/loss with total time taken
+            let result = playerWins board strategies
+            putStrLn $ "\nPlaying on the board "++ show (snd board) ++" (as the " ++(if fst board then "first" else "second") ++" player):\n" ++ show (snd result)
+            let !winner = fst result
+
+            endTime <- getCurrentTime
+            let timeDiff = truncate (s_over_us * (endTime `diffUTCTime` startTime))
+            return $ (winner, timeDiff)
+        s_over_us = 1000000  -- number of seconds in a microsecond
+
+-- returns list of win/loss with total time taken in microseconds
 timePlays :: Int -> [((Bool,Board2), (Strat, Strat), (StratS, StratS))] -> IO ([Bool],Int)
 timePlays time0 [] = return ([],time0)
 timePlays time0 ((b ,strats1, strats2):ms)  = do
@@ -633,7 +643,7 @@ timePlays time0 ((b ,strats1, strats2):ms)  = do
 
    case play1 of
      Nothing -> do
-          putStrLn "Time is up!"
+          putStrLn "\nTime is up!"
           return ([],time0) --we treat nothing as timing out.
 
      Just (player,time) -> do
@@ -656,7 +666,6 @@ testHeuristicsAgainstRandom inputs = do
         -- 3 points every time the heuristics beats the random bot on average
         putStrLn $ "\nCounting points (majority of wins on a board gives 3 points): "
                    ++ show (3 * countWins winnedBoards)
-        putStrLn "Note that this is just provisional. The points are not added to the expected mark.\n"
 
         return True -- ==> we continue with testing
     where
@@ -704,13 +713,12 @@ testHeuristicsAgainstMartin inputs = do
         (bools,_) <- timePlays timeLimit allInputs
 
         -- 3 points every time the heuristics beats the random bot on average
-        putStrLn $ "\nCounting points (majority of wins on a board gives 2 points): "
+        putStrLn $ "\nCounting points (win on a board gives 2 points): "
                    ++ show (2 * countWins bools)
-        putStrLn "Note that this is just provisional. The points are not added to the expected mark.\n"
 
         return True -- ==> we continue with testing
     where
-        timeLimit = 3000000
+        timeLimit = 5000000
         strats1 = (  computerFirstHeuristic,   computerSecondHeuristic)
         strats2 = (S.computerFirstHeuristic, S.computerSecondHeuristic)
 
@@ -752,5 +760,14 @@ countWins = length . filter (&&True)
 -- Shamelessly stolen from QuickCheck.
 
 protect :: (AnException -> a) -> IO a -> IO a
-protect f x = either f id `fmap` tryEvaluateIO x
+protect f x = do
+    e <- tryEvaluateIO x
+    case e of
+        Left v -> do
+            putStr "\tAn Exception occured: "
+            print v
+            putStrLn ""
 
+            return $ f v
+
+        Right v -> return v

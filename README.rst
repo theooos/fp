@@ -5,6 +5,8 @@ Functional Programming: test benches
 Version history
 ---------------
 
+- 12 Dec 17:00: Fixed timing and improved outputs in Test 8.
+
 - 10 Dec 13:05: Published Test 8 and improved tests 5 and 6 (Test 7 stays the same).
 
 - 4 Dec 1:05: Published Test 6.
