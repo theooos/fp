@@ -631,9 +631,8 @@ timePlay timeLeft board strategies =
             let !winner = fst result
 
             endTime <- getCurrentTime
-            let timeDiff = truncate (s_over_us * (endTime `diffUTCTime` startTime))
+            let timeDiff = truncate (endTime `diffUTCTime` startTime)
             return $ (winner, timeDiff)
-        s_over_us = 1000000  -- number of seconds in a microsecond
 
 -- returns list of win/loss with total time taken in microseconds
 timePlays :: Int -> [((Bool,Board2), (Strat, Strat), (StratS, StratS))] -> IO ([Bool],Int)
@@ -718,7 +717,7 @@ testHeuristicsAgainstMartin inputs = do
 
         return True -- ==> we continue with testing
     where
-        timeLimit = 5000000
+        timeLimit = 3000000
         strats1 = (  computerFirstHeuristic,   computerSecondHeuristic)
         strats2 = (S.computerFirstHeuristic, S.computerSecondHeuristic)
 
@@ -764,7 +763,7 @@ protect f x = do
     e <- tryEvaluateIO x
     case e of
         Left v -> do
-            putStr "\tAn Exception occured: "
+            putStr "  An Exception occured: "
             print v
             putStrLn ""
 
