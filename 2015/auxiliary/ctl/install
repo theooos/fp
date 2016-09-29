@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Script to connect to a school computer. Presumably by George Brighton.
+# Modified by Bram Geron for the FP module.
+
+# You can download and run this script by typing:
+#
+#     curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/install' | bash -
+
+# Abort on error.
+set -ex
+
+# set up a bin directory if one does not exists
+if [ ! -d "$HOME/bin" ]; then
+
+	# create a bin directy
+	echo "Creating ~/bin..."
+	mkdir "$HOME/bin"
+fi
+
+# copy the connect script
+echo "Downloading the script to your ~/bin directory..."
+curl --fail -o "$HOME/bin/ctl" "https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/ctl"
+
+chmod +x $HOME/bin/ctl
+
+# print out instructions on how to run it
+echo "Done. You can now run \`~/bin/ctl\` to connect to a lab machine."
