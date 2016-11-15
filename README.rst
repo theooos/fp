@@ -5,8 +5,8 @@ Functional Programming
 Version history
 ---------------
 
-29 September 14:32: Reset repo for 2016.
-15 Nov: Remove distracting old stuff.
+- 29 September 14:32: Reset repo for 2016.
+- 15 Nov: Remove distracting old stuff.
 
 
 How to get the files
