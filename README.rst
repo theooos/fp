@@ -14,9 +14,15 @@ How to get the files
 
 Run this from a workstation::
 
-    git clone https://github.com/uob-fp/fp fp
+    $ git clone https://github.com/uob-fp/fp fp
+    $ cd fp/Scrabble
+    $ sh install.sh
 
-You now have the latest files for Scrabble on your laptop in directory ``fp``.
+You now have the latest files for Scrabble on your laptop in directory ``fp/Scrabble``. To play around with the sample solution, run this command::
+
+	$ ghci -package-db=cheat/ghc Scrabble
+
+You will fill in your answers to the exercises in ``Scrabble.hs``. For complete information, look in that file.
 
 From time to time, we may release new versions to fix problems. You can update to a newer version simply by running ``git pull`` inside ``fp``. We will notify you when newer versions are available.
 
