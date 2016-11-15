@@ -20,7 +20,7 @@ Run this from a workstation::
 
 You now have the latest files for Scrabble on your laptop in directory ``fp/Scrabble``. To play around with the sample solution, run this command::
 
-	$ ghci -package-db=cheat/ghc Scrabble
+	$ ghci -package-db=Bram/ghc Scrabble
 
 You will fill in your answers to the exercises in ``Scrabble.hs``. For complete information, look in that file.
 
@@ -45,7 +45,7 @@ Frequently asked question
     GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
     ghc: panic! (the 'impossible' happened)
       (GHC version 7.6.3 for x86_64-unknown-linux):
-            While parsing "cheat/ghc/package.cache": too few bytes. Failed reading at byte position 993
+            While parsing "Bram/ghc/package.cache": too few bytes. Failed reading at byte position 993
 
     Please report this as a GHC bug:  http://www.haskell.org/ghc/reportabug
 
@@ -55,7 +55,7 @@ then you must execute the following command ::
     
 before restarting ``ghci`` with ::
 
-    ghci -package-db=cheat/ghc Scrabble
+    ghci -package-db=Bram/ghc Scrabble
 
 In case of difficulty
 ---------------------
