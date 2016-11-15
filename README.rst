@@ -1,5 +1,5 @@
-Functional Programming: test benches
-====================================
+Functional Programming
+======================
 
 
 Version history
@@ -9,25 +9,25 @@ Version history
 15 Nov: Remove distracting old stuff.
 
 
-How to get the test benches
----------------------------
+How to get the files
+--------------------
 
 Run this from a workstation::
 
     git clone https://github.com/uob-fp/fp fp
 
-You now have the latest test bench on your laptop in directory ``fp``.
+You now have the latest files for Scrabble on your laptop in directory ``fp``.
 
-From time to time, we may release new test benches to fix problems. You can update to a newer test bench simply by running ``git pull`` inside ``fp``. We will notify you when newer test benches are available.
+From time to time, we may release new versions to fix problems. You can update to a newer version simply by running ``git pull`` inside ``fp``. We will notify you when newer versions are available.
 
 ----
 
 You can also use Git from your laptop or home machine if you install it.
 
-In case of problems
--------------------
-
-Although we prepare the test bench with care, it is always possible that there is a bug. As usual, if you suspect there might be a problem, please report it on Facebook.
+.. In case of problems
+.. -------------------
+.. 
+.. Although we prepare the test bench with care, it is always possible that there is a bug. As usual, if you .. suspect there might be a problem, please report it on Facebook.
 
 In case of difficulty
 ---------------------
