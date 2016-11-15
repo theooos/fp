@@ -35,6 +35,28 @@ You can also use Git from your laptop or home machine if you install it.
 .. 
 .. Although we prepare the test bench with care, it is always possible that there is a bug. As usual, if you .. suspect there might be a problem, please report it on Facebook.
 
+Frequently asked question
+-------------------------
+
+**Q: I'm getting this error message! What do I do?**
+
+**A:** If you get this error message ::
+
+    GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
+    ghc: panic! (the 'impossible' happened)
+      (GHC version 7.6.3 for x86_64-unknown-linux):
+            While parsing "cheat/ghc/package.cache": too few bytes. Failed reading at byte position 993
+
+    Please report this as a GHC bug:  http://www.haskell.org/ghc/reportabug
+
+then you must execute the following command ::
+
+    module load ghc
+    
+before restarting ``ghci`` with ::
+
+    ghci -package-db=cheat/ghc Scrabble
+
 In case of difficulty
 ---------------------
 
