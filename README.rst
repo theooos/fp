@@ -6,6 +6,7 @@ Version history
 ---------------
 
 29 September 14:32: Reset repo for 2016.
+15 Nov: Remove distracting old stuff.
 
 
 How to get the test benches
@@ -13,11 +14,11 @@ How to get the test benches
 
 Run this from a workstation::
 
-    git clone https://github.com/uob-fp/fp fp-testbenches
+    git clone https://github.com/uob-fp/fp fp
 
-You now have the latest test bench on your laptop in directory ``fp-testbenches``.
+You now have the latest test bench on your laptop in directory ``fp``.
 
-From time to time, we may release new test benches to fix problems. You can update to a newer test bench simply by running ``git pull`` inside ``fp-testbenches``. We will notify you when newer test benches are available.
+From time to time, we may release new test benches to fix problems. You can update to a newer test bench simply by running ``git pull`` inside ``fp``. We will notify you when newer test benches are available.
 
 ----
 
