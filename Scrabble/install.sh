@@ -25,7 +25,7 @@
 
 
 
-GENERATED_ON='Tue 15 Nov 23:59:11 GMT 2016'
+GENERATED_ON='Wed 16 Nov 01:41:21 GMT 2016'
 GENERATED_ON_MACHINE='cca-ug04-13013'
 set -e
 
@@ -92,8 +92,8 @@ fi
 # To extract the files from this archive, save it to some FILE, remove
 # everything before the '#!/bin/sh' line above, then type 'sh FILE'.
 #
-lock_dir=_sh11128
-# Made on 2016-11-15 23:59 GMT by <haskell@teachers>.
+lock_dir=_sh26052
+# Made on 2016-11-16 01:41 GMT by <haskell@teachers>.
 # Source directory was '/home/students/bxg314/uob/Teaching/fp/FunProg2016/Scrabble/library-build/build'.
 #
 # Existing files will *not* be overwritten, unless '-c' is specified.
@@ -181,8 +181,8 @@ ${echo} "x - SKIPPING Scrabble.hs (file already exists)"
 else
 ${echo} "x - extracting Scrabble.hs gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11128/gzi
-M'XL("$VA*U@"`U-C<F%B8FQE+FAS`*Q;;7?;-K+^SE^!JCUK:2/)L;O=IMZZ
+begin 600 _sh26052/gzi
+M'XL("#ZY*U@"`U-C<F%B8FQE+FAS`*Q;;7?;-K+^SE^!JCUK:2/)L;O=IMZZ
 M9YTV:7Q/VN38:;R]N3E;B(0DQA2A$*0E9;O__3XS`X"D[+CYT)Z>6"*!P6`P
 M\\P+1O^9?*Z>G_W\XR]G/SY1W[]\J3Z?_#=)5C9K"J,NTTK/9OBP69K*)$F^
 M6MNJ5M_;LJYL,?W)ECK;?_B#,>M+\SX\_D'7>OK]4E>]!\]S5_<>_*1W,Q.>
@@ -405,8 +405,8 @@ ${echo} "x - SKIPPING Sowpods.hs (file already exists)"
 else
 ${echo} "x - extracting Sowpods.hs gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11128/gzi
-M'XL("$ZA*U@"`U-O=W!O9',N:',`C/U+C^PZEZ8)SK]?<1"3C`0J(GM4@P0:
+begin 600 _sh26052/gzi
+M'XL("#^Y*U@"`U-O=W!O9',N:',`C/U+C^PZEZ8)SK]?<1"3C`0J(GM4@P0:
 M/:E"UZ"!*B"[46ADY$!NHIOQ<TFTCZ3,79;(_]XB*9GY7N_#Z#K8>Q_8LQ87
 M[U?Q,H=QG=Q?_R5\W\.8_OJ^N>C^]K?__B]_^W\/7V[YZS.&^:];SO?TG__3
 M?_K^_O[7[Q#'ZS"[T5^R#\L0MW^]A/D_I>;^/XWA>YG",)[@7_-/_FM8QK\N
@@ -17061,8 +17061,8 @@ ${echo} "x - SKIPPING Blank.hs (file already exists)"
 else
 ${echo} "x - extracting Blank.hs gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11128/gzi
-M'XL("$ZA*U@"`T)L86YK+FAS`(U42V_;,`R^ZU<0V&')D!AH=QO6`GVO0%]H
+begin 600 _sh26052/gzi
+M'XL("#^Y*U@"`T)L86YK+FAS`(U42V_;,`R^ZU<0V&')D!AH=QO6`GVO0%]H
 MNNW0]:#$3"-4EEQ);IJM^^\C)2>1C1Z60RR3_#X^]-%_QA_@XN#J[/O!V0D<
 MW=S`A_%?(2I;-AKA4$OS!,L%.A1"5;5U`8ZL"<[JXM(:6?:-QXCU!)_7YF,9
 M9'&TD*YCN%`^=`R7<C7%M66R\@&K@AB]U5C<HBRU,GWW^77QW7@Y[]MOI2EM
@@ -17113,8 +17113,8 @@ fi
 # To extract the files from this archive, save it to some FILE, remove
 # everything before the '#!/bin/sh' line above, then type 'sh FILE'.
 #
-lock_dir=_sh11089
-# Made on 2016-11-15 23:59 GMT by <haskell@teachers>.
+lock_dir=_sh25985
+# Made on 2016-11-16 01:41 GMT by <haskell@teachers>.
 # Source directory was '/home/students/bxg314/uob/Teaching/fp/FunProg2016/Scrabble/library-build/result'.
 #
 # Existing files WILL be overwritten.
@@ -17216,8 +17216,8 @@ fi
 fi
 ${echo} "x - extracting Bram/obj/Sowpods.hi gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$NA*U@"`U-O=W!O9',N:&D`K55]3%M5%'_O]8M2OE:@H"W=ATPWI5TI
+begin 600 _sh25985/gzi
+M'XL("#FY*U@"`U-O=W!O9',N:&D`K55]3%M5%'_O]8M2OE:@H"W=ATPWI5TI
 M#-B2+9D=;"10RF"H,\X\7M_H<X^^Q^TKM,XLDBS,:+(_MAA0R9+]03*CT3#%
 MN3@5X]R,)$KTGQF-ROXP&/UCB3%^Q"R^<WMON;1&8^(C]^.<\SN_<\Z]IQ?^
 MCT_C'/FLYN@P1XB,9G/85DW]`@'PW.D.OWOKTOS4.[^VNFZ?>>F;JU>>>'9_
@@ -17276,8 +17276,8 @@ fi
 fi
 ${echo} "x - extracting Bram/obj/Sowpods.dyn_hi gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$NA*U@"`U-O=W!O9',N9'EN7VAI`*U5;TQ;511_[Y6VE/)O!0I*Z?[(
+begin 600 _sh25985/gzi
+M'XL("#JY*U@"`U-O=W!O9',N9'EN7VAI`*U5;TQ;511_[Y6VE/)O!0I*Z?[(
 M=%/:\6_`%F<RNS(Q4-A@J#.;>;R^M<\]^AZWK]"Z9)%D88LF^[!]`'59P@<2
 M%HV&*>KB5,SF3"11XOPPHU'9!S.C'Y:H\4_,XCVW]Y9+,1H32^Z[[YSS.[]S
 MSCWG7<0_/HD*]%>`5P=>C70UV?`#K!F\$H)@_QEC/J!@43C9X?=L7IR;>.?7
@@ -17328,8 +17328,8 @@ test `LC_ALL=C wc -c < 'Bram/obj/Sowpods.dyn_hi'` -ne 2505 && \
 # ============= Bram/obj/Bram.hi ==============
 ${echo} "x - extracting Bram/obj/Bram.hi gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$NA*U@"`T)R86TN:&D`Y%P'7!3']]^].YJ`H"BQ8@74"-S!P7$@@@@B
+begin 600 _sh25985/gzi
+M'XL("#JY*U@"`T)R86TN:&D`Y%P'7!3']]^].YJ`H"BQ8@74"-S!P7$@@@@B
 M@H`EJ(@B"E)$44"QMV!%,8D82XS^C#%&8V_88HDU%B2V&!MJU-ABU!B3F&C^
 M^V9G]V:7N:/F]_]_/G_][,SME#?O?>>]-V]V9V%?%R<Q^)^*NWRY2XTO#7<M
 M.<XP^1ZX`<L,FSK'\HU[TAK+`L]%MQ_Y)OY5T&3U@Q\"[FSL]O#TI/RB[WIM
@@ -17655,8 +17655,8 @@ test `LC_ALL=C wc -c < 'Bram/obj/Bram.hi'` -ne 46681 && \
 # ============= Bram/obj/Bram.dyn_hi ==============
 ${echo} "x - extracting Bram/obj/Bram.dyn_hi gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$NA*U@"`T)R86TN9'EN7VAI`.1<!U@5Q[??VR@"@J+$BA50(W`O[7(I
+begin 600 _sh25985/gzi
+M'XL("#JY*U@"`T)R86TN9'EN7VAI`.1<!U@5Q[??VR@"@J+$BA50(W`O[7(I
 M@@@BB(`-%;$@'5$4L'<%&VH2Q5BC?S7&:.P]:BRQQH+&%J,H:L388HM18Z)Y
 M>V9G]\XN<R\U__>^[^FW,W>GG#GG-^><.;,[B^Q=82*#_RG9RYN]U/C2*-@$
 M:L>PUU"&67R18?)]<6,9,WCR++/W+HEKS>:Y+;SSR#O^KWF-UCSXV?_NIO"'
@@ -17982,8 +17982,8 @@ test `LC_ALL=C wc -c < 'Bram/obj/Bram.dyn_hi'` -ne 46693 && \
 # ============= Bram/obj/libHSsupport-1.0.0.0-47FdxPmVoxVakhQuY87C3-ghc8.0.1.so ==============
 ${echo} "x - extracting Bram/obj/libHSsupport-1.0.0.0-47FdxPmVoxVakhQuY87C3-ghc8.0.1.so gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$NA*U@"`VQI8DA3<W5P<&]R="TQ+C`N,"XP+30W1F1X4&U6;WA686MH
+begin 600 _sh25985/gzi
+M'XL("#NY*U@"`VQI8DA3<W5P<&]R="TQ+C`N,"XP+30W1F1X4&U6;WA686MH
 M4759.#=#,RUG:&,X+C`N,2YS;P"L6@=45-?6OD-SD#:`%!5DJ*)(EV*+(`AC
 M`>G2!$88G5&:#"-(+&C4@(I@B6*'*!$KJ-$02T2?!6/#1!-,8@**!D0%!!1]
 M:M[!NR>/N]^];_UOK9_EYYGY9L^YYYZS][?W.7>639X>H,+C4<H_5>H3JN]=
@@ -35085,8 +35085,8 @@ test `LC_ALL=C wc -c < 'Bram/obj/libHSsupport-1.0.0.0-47FdxPmVoxVakhQuY87C3-ghc8
 # ============= Bram/package-students.conf ==============
 ${echo} "x - extracting Bram/package-students.conf gzipped"
   sed 's/^X//' << 'SHAR_EOF' | uudecode &&
-begin 600 _sh11089/gzi
-M'XL("$RA*U@"`W!A8VMA9V4M<W1U9&5N=',N8V]N9@"-43U/PS`0W?TK,C"2
+begin 600 _sh25985/gzi
+M'XL("#RY*U@"`W!A8VMA9V4M<W1U9&5N=',N8V]N9@"-43U/PS`0W?TK,C"2
 M`@*IR!,"J6)@`!4J,;KV-3Z2^"R?31,0_QVGZ=?0H;)LO7>^]^RG<ZH%67#R
 MGD(4WQ`8R<GB9G(]+-&@!L>YX\.Q!XTK!/,RUH0FWP>L;)2B5>ABWA!DL0RJ
 M?1B.2=?_"(YJB0W&7@I++7A5@11>Z3J#,H5&"NX=>4:6P@#K@#X./Q!:1:@H
