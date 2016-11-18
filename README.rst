@@ -56,6 +56,41 @@ then you must execute the following command ::
 before restarting ``ghci`` with ::
 
     ghci -package-db=Bram/ghc Scrabble
+    
+**Q: How can I connect to a lab computer?**
+
+**A:** From tinky-winky, type this in your terminal::
+
+    curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/install' | bash -
+    
+You can then type ``ctl`` in tinky-winky to connect to the lab.
+
+If you're not on tinky-winky, check out http://supportweb.cs.bham.ac.uk/remote-access/ . Might be easiest to ssh to tinky-winky first.
+
+**Q: How can I work on Scrabble.hs from my own laptop?**
+
+**A:** Change your Scrabble.hs according to these instructions: https://github.com/uob-fp/fp/commit/a11b8d757625d79d16575b0e704ec3c8d87a2979 . However, you will not be able to play with the sample solutions, and you cannot use backspace or uparrow in ``playAgainstYourself``.
+
+**Q: The install.sh script does not work on Windows or on my Mac!**
+
+**A:** That's true. See the previous question.
+
+**Q: In autoResize, do we need to make sure the code works with the [[]] and [] board?**
+
+**A:** No. We do not consider [[]] or [] a valid board. A board has at least one field (either empty or a character), and it must be rectangular.
+
+**Q: I ran out of disk space!**
+
+**A:** This is one thing you could try::
+
+    $ cd ~/.cache 
+    $ rm -rf mozilla
+
+This will delete firefox's cache.
+
+*NB. Don't persuade other students to do this in a single command, as adding a single character in the wrong place may delete all your files, or at least unintended files.*
+
+
 
 In case of difficulty
 ---------------------
