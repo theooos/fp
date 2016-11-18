@@ -57,6 +57,8 @@ before restarting ``ghci`` with ::
 
     ghci -package-db=Bram/ghc Scrabble
     
+However! This will not work from tinky-winky. For that, see the next question.
+    
 **Q: How can I connect to a lab computer?**
 
 **A:** From tinky-winky, type this in your terminal::
