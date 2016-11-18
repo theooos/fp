@@ -5,7 +5,7 @@
 # or have a School active vpn connection.
 
 while true; do
-        suffix=$((10 + RANDOM % 60))
+        suffix=$((10 + RANDOM % 50))
         machine="cca-ug04-130${suffix}.cs.bham.ac.uk"
         echo "Trying $machine"
         ping=`ping -c 1 -t 1 $machine | grep bytes | wc -l`
