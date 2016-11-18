@@ -12,9 +12,10 @@ while true; do
         suffix=$((10 + RANDOM % 50))
         machine="cca-ug04-130${suffix}.cs.bham.ac.uk"
         echo "Trying $machine"
-        ping=`ping -c 1 -t 1 $machine | grep bytes | wc -l`
-	if [ "${ping}" -gt 0 ];then
-	    ssh -o StrictHostKeyChecking=no $machine
+	if ssh -o StrictHostKeyChecking=no $machine
+        then
             break
+        else
+            continue
 	fi
 done
