@@ -7,6 +7,7 @@ Version history
 
 - 29 September 14:32: Reset repo for 2016.
 - 15 Nov: Remove distracting old stuff.
+- 18 Nov: Added loads.
 
 
 How to get the files
@@ -102,8 +103,6 @@ We will do our best to help you in the labs. Outside the labs, Facebook_ is ofte
 Time Table: 
 
 ========   ===============   =======================
-Lecture    Mon 10.00-10.50   Strathcona   LT2  (G17)
-Tutorial   Mon 11.00-11.50   Strathcona   LT2  (G17)
 Lecture    Mon 15.00-15.50   Gispert Kapp LT1 (E203)
 Lab        Wed 11.00-14.00   CompSci          (UG04)
 Lecture    Fri 13.00-13.50   Hawthorne         (203)
