@@ -4,6 +4,10 @@
 # You must be in a School machine (such as tinky-winky), or
 # or have a School active vpn connection.
 
+# You can install this script by typing:
+#
+#     curl 'https://raw.githubusercontent.com/uob-fp/fp/master/auxiliary/ctl/install' | bash -
+
 while true; do
         suffix=$((10 + RANDOM % 50))
         machine="cca-ug04-130${suffix}.cs.bham.ac.uk"
